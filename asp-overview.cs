@@ -74,7 +74,7 @@
             return RedirectToAction(<action name>) //redirecting to an action in that specific controller
             return RedirectToAction(<Controller name>,<action name>)
 
-<-------CRUD Operations-------------->
+<----------------------------------HTTP Operations------------------------------------------>
 //in the controller file
 //above the IActionResult function under the main controller class add the Http<type of crud operation> attribute
 //as the html form has the name property same as that of class data members
@@ -142,19 +142,22 @@
         Install-Package Microsoft.EntityFrameworkCore.SqlServer
         Install-Package EntityFramework
         Install-Package Microsoft.EntityFrameworkCore.Tools
+
 <----code first-----> //first model then database https://docs.microsoft.com/en-us/ef/core/get-started/aspnetcore/new-db
-    //in the models folder create a new class file    
+    //in the (create)enity folder create a new class file    
         //naming convention: <name>Context.cs
     //in the file
         using Microsoft.EntityFrameworkCore;
+        //using System.Data.Entity do not use error in startup.cs
     //the class must inherite DbContext
     public class <Classname> : DbContext
     {
         //create a constructor
-        public first_asp_appContext(DbContextOptions<<class name>>Context> options):base(options) //ie options are passed to the base class
-        {
-        }
-        public DbSet<class name of the defined models> class name in plural form { get; set; }
+        public <class name>(DbContextOptions<<class name>> options):base(options) //ie options are passed to the base class
+        {}
+        //outside constructor
+        public DbSet<<class name of the defined models>> class name in plural form { get; set; }
+        
     }
         
 //in the start up file paste using statments
@@ -179,11 +182,39 @@
 <---database first------> //first database then code https://docs.microsoft.com/en-us/ef/core/get-started/aspnetcore/existing-db
 //install enitity framework and core
 //open sql server object explorer copy the connection string of database
+    //install the entity based sql packages including designs
 //in the package manager console window
-    Scaffold-DbContext "Server=(localdb)\mssqllocaldb;Database=Blogging;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir <destination folder>
+//connecting db with vs
+    //in vs go to sql server object explorer
+        //choose db select aouth and connect
+        //right click on db and properties copy connection string
+    Scaffold-DbContext "<connection string>" Microsoft.EntityFrameworkCore.SqlServer -OutputDir <destination folder>
+    //remove this after timeout from connection string if needed
+    //destination folder name: entities
 
 
+<--------------------------CRUD operation using LINQ-------------------------->
+//linq uses method and query syntax use method syntax more
+//create a folder <project name>Repository //this folder will contain all the db call functions
+    //create a new class file <Model name>Repository
+    //in the repo class file
+        public <return type> <function name>
+        {
+            <context name> <obj name>=new <context name>;
+            //to convert to list use <whatever>.ToList();
+        }
 
+<----reading---->
+    //one record
+        .FirstOrDefault()
+    //one or more
+        .Where()
+    //converting filtered data into list
+        .ToList()
 
+    //Query syntax
+        //sql like syntax
 
-
+//once the db is migrated  
+//in the controller create a private var to access the entites of the
+        
