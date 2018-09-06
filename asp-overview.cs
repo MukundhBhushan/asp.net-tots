@@ -4,7 +4,7 @@
 //Models: use for showing dataformat for database or input from user etc 
 //view: the html code
 //controller: add the routes here. needed manupulation done before passing it to the view
-
+    //new files have to be created for every route (controller) and sub-route(action)
 //adding mvc to a project
     //install microsoft mvc nuget package
 
@@ -15,6 +15,22 @@
             //create a new file ProductController.cs in the controller folder
             //create a new Products.cs in models --> this should contain the format of the data be presented
 
+<------------------------------------views--------------------------------------------->
+//create a new folder under views folder
+    //choose the partial view if the changes are made only to a subfield(for sub routes) 
+    //choose templates if thewebsite should look the same
+        //default templates in views->shared->_layout.cshtml
+
+<-----passing data to view--------->
+    //in the controller file create an object of the model whose values have to be passed
+    <Model name> <obj name>=new <model name>{
+        prop1=val1,
+        prop2=val2
+    }
+    //then return it 
+        return View(<object name>)
+    //in view file
+        <html tag>@Model.<prop1></html tag>
 
 <-------ViewModel------>
 //if multiple objects have to be returned to the view
@@ -26,7 +42,7 @@
             //in the class
                 public <class name in model> <object name> {get;set;}
         
-    //in the main controller //optional if using preset values
+    //in the main controller //optional: if using preset values
         //after assigning values to the objects to the models object
             <Model class name> <obj name>=new <Model class name>{
                 para1=value1
@@ -49,14 +65,21 @@
         <html tag> @Model.<property needed> </html tag>
 
 
-
 //returning views other than index
     return View("<htmlfile name>")
 //controller: the main class with ":controller" atached with it
 //action: the functions with IActionResult return type with in the controller class
 
+<------partial views------------------------>
+//bigger views break down into smaller views
+//type the html code
+    //fitting the partial view to the actual view
+        //in the main html file
+        @Html.Partial("<name of the partial view>")
 
-//<------------routing----------->
+
+
+<------------------------------------------------------routing----------------------------------------------------------->
 //in the controller file
 //before every class which needs to have a seperate route add the route attribute
     [Route("<route url>")] //single word not the whole url
@@ -65,8 +88,16 @@
     [Route("[controller]")] 
         //in the actual controller 
             Route["action"]//uses the class name of the controller before the Controller <URL used>Controller
+
+    //adding options for route
+    //attribute route constrains
+    [Route("<route url>:<options>(<statement>)")]
+    options 
+        regex,min,max,minlength,maxlength,range,int,float,guid
+
     //showing contents in a file directly on webpage
         return PhysicalFile('<file path>',<type of file>)  //text/plain
+        return Context("<returns string>")
     //<----redirecting------>
          //in the class
     	    return LocalRedirect(<url>) //redirecting within the site
@@ -74,7 +105,17 @@
             return RedirectToAction(<action name>) //redirecting to an action in that specific controller
             return RedirectToAction(<Controller name>,<action name>)
 
-<----------------------------------HTTP Operations------------------------------------------>
+
+<----routing in startup.cs file---------->
+routes.MapRoute(
+    "<name of route>", //name
+    "main/sub/{<para1>}/{<para2>}", //url
+    new{controller="view folder name",actions="<name of an action in the controller>"} //defaults
+    new{<para1>=@"\d{n}"} //setting reules for routes(use regex)
+
+)
+
+<--------------------------------------------------HTTP Operations------------------------------------------------------------->
 //in the controller file
 //above the IActionResult function under the main controller class add the Http<type of crud operation> attribute
 //as the html form has the name property same as that of class data members
@@ -136,7 +177,7 @@
 	}
 
 
-//<--------Entity framework----------->
+//<-------------------------------------------------Entity framework-------------------------------------------------------------->
 //follow 
     //packages
         Install-Package Microsoft.EntityFrameworkCore.SqlServer
@@ -193,7 +234,7 @@
     //destination folder name: entities
 
 
-<--------------------------CRUD operation using LINQ-------------------------->
+<-----------------------------------------CRUD operation using LINQ----------------------------------------------------->
 //linq uses method and query syntax use method syntax more
 //create a folder <project name>Repository //this folder will contain all the db call functions
     //create a new class file <Model name>Repository
@@ -218,3 +259,4 @@
 //once the db is migrated  
 //in the controller create a private var to access the entites of the
         
+
